@@ -2,7 +2,7 @@ package timer;
 
 public class Timer {
 
-    private Thread thread;
+    private final Thread thread;
     private volatile boolean running = true;
 
     private long before;
@@ -11,15 +11,16 @@ public class Timer {
         this.before = System.currentTimeMillis();
         this.thread = new Thread(() -> {
 
+            final long sleep = callbackTime/10;
             while(running) {
                 long now = System.currentTimeMillis();
                 long delta = now - before;
                 if(delta > callbackTime){
-                    callback.onTimer(now);
+                    callback.onTimer(delta);
                     before = now;
                 }
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(sleep);
                 } catch (InterruptedException ignored) {
                 }
             }
